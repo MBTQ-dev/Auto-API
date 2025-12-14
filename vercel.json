@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "name": "mbtq-auto-api",
+  "builds": [
+    {
+      "src": "main.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "main.py"
+    }
+  ],
+  "env": {
+    "APP_NAME": "MBTQ Auto-API",
+    "DEBUG": "False"
+  }
+}
