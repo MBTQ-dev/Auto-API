@@ -59,29 +59,36 @@ async def verify_deafauth(x_mbtq_token: Optional[str] = Header(None)):
     if not x_mbtq_token:
         raise HTTPException(status_code=401, detail="DeafAUTH token required")
     # Validate against DeafAUTH service
-    # In production: await verify_token_with_service(x_mbtq_token)
-    return {{"user": "demo-user", "token": x_mbtq_token}}
+    # TODO: In production, integrate with actual DeafAUTH service:
+    # user_info = await httpx.post('https://deafauth.mbtq.dev/verify', 
+    #                               json={{'token': x_mbtq_token}})
+    # For development/demo:
+    return {{"user": x_mbtq_token, "token": x_mbtq_token}}
 
 # Fibonrose logging
 async def log_to_fibonrose(action: str, metadata: dict):
     # Log to Fibonrose reputation system
-    print(f"🌹 Fibonrose Log: {{action}}, {{metadata}}, timestamp: {{datetime.utcnow()}}")
-    # In production: await httpx.post('https://fibonrose.mbtq.dev/log', json={{...}})
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"🌹 Fibonrose Log: {{action}}, {{metadata}}, timestamp: {{datetime.utcnow()}}")
+    # TODO: In production, integrate with actual Fibonrose service:
+    # await httpx.post('https://fibonrose.mbtq.dev/log', 
+    #                  json={{'action': action, 'metadata': metadata}})
 
 @app.get("/api/{api_slug}")
-async def get_{api_slug.replace('-', '_')}(x_mbtq_token: Optional[str] = Header(None)):
+async def handle_request(x_mbtq_token: Optional[str] = Header(None)):
     try:
         # DeafAUTH check
         user = await verify_deafauth(x_mbtq_token)
         
         # Make API request
+        headers = {{'User-Agent': 'MBTQ-Universe/1.0'}}
+        {f"headers['Authorization'] = 'Bearer YOUR_API_KEY'  # Replace with actual API key" if api_auth == 'apiKey' else '# No authentication required'}
+        
         async with httpx.AsyncClient(timeout=30.0) as client:
             response = await client.get(
                 '{api_link}',
-                headers={{
-                    {f"'Authorization': 'Bearer YOUR_API_KEY'," if api_auth == 'apiKey' else ''}
-                    'User-Agent': 'MBTQ-Universe/1.0'
-                }},
+                headers=headers
             )
             response.raise_for_status()
             data = response.json()
