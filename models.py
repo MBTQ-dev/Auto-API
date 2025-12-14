@@ -2,7 +2,7 @@
 Data models for MBTQ Auto-API
 """
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 
@@ -32,7 +32,8 @@ class AuthRequest(BaseModel):
     username: str = Field(..., min_length=1, max_length=100)
     password: Optional[str] = None
     
-    @validator('username')
+    @field_validator('username')
+    @classmethod
     def username_alphanumeric(cls, v):
         if not v.replace('_', '').replace('-', '').isalnum():
             raise ValueError('Username must be alphanumeric (with _ or - allowed)')
