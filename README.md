@@ -13,6 +13,8 @@
 - **⚡ PinkSync Deployment** - Auto-deploy APIs to mbtq.dev
 - **🎨 Full-Stack Code Generation** - Generate complete API integrations
 - **📡 Public API Discovery** - Browse and integrate 1000+ public APIs
+- **🐙 Complete GitHub REST API** - Full access to all GitHub API endpoints
+- **🎯 Curated Developer APIs** - 40+ high-quality open-source development APIs
 - **🚀 FastAPI Backend** - High-performance async API server
 - **📊 Real-time Activity Logs** - Track all API interactions
 - **🏆 Reputation System** - Gamified user engagement
@@ -109,6 +111,63 @@ curl http://localhost:8000/api/entries?category=Development&limit=10
 
 #### GET `/api/categories`
 Get list of all available API categories.
+
+#### GET `/api/github`
+Get comprehensive GitHub REST API endpoints.
+
+**Query Parameters:**
+- `search` (optional): Search term to filter GitHub endpoints
+
+**Example:**
+```bash
+curl http://localhost:8000/api/github
+curl http://localhost:8000/api/github?search=issues
+```
+
+**Returns:** Complete collection of GitHub REST API endpoints including:
+- Repositories, Issues, Pull Requests
+- Commits, Branches, Users
+- Organizations, Gists, Actions
+- Releases, Search, Webhooks
+- Contents, Notifications, Projects
+
+#### GET `/api/enriched`
+Get curated collection of high-quality open-source/free development APIs.
+
+**Query Parameters:**
+- `search` (optional): Search term
+- `auth` (optional): Filter by auth type
+- `limit` (default: 100): Maximum results
+
+**Example:**
+```bash
+curl http://localhost:8000/api/enriched
+curl http://localhost:8000/api/enriched?search=docker
+```
+
+**Returns:** Enriched API collection including:
+- Version Control: GitLab, Bitbucket
+- Package Registries: npm, PyPI, Maven, crates.io
+- CI/CD: CircleCI, Travis CI, Vercel, Netlify
+- Code Quality: SonarQube, Codacy
+- Documentation: Stack Exchange, DevDocs
+- And 30+ more development APIs!
+
+#### GET `/api/curated`
+Get all curated APIs (GitHub + enriched APIs combined).
+
+**Query Parameters:**
+- `include_github` (default: true): Include GitHub endpoints
+- `include_enriched` (default: true): Include enriched APIs
+- `search` (optional): Search term
+- `limit` (default: 200): Maximum results
+
+**Example:**
+```bash
+curl http://localhost:8000/api/curated
+curl "http://localhost:8000/api/curated?search=api&limit=50"
+```
+
 
 ### Code Generation Endpoints
 
