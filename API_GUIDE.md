@@ -144,6 +144,169 @@ Get list of all available categories.
 }
 ```
 
+#### GET `/api/github`
+Get comprehensive GitHub REST API endpoints.
+
+**Query Parameters**:
+- `search` (string, optional): Search term to filter GitHub endpoints
+
+**Response**:
+```json
+[
+  {
+    "API": "GitHub - Repositories",
+    "Description": "List, create, update, and delete repositories",
+    "Auth": "apiKey",
+    "HTTPS": true,
+    "Cors": "yes",
+    "Link": "https://api.github.com/repos",
+    "Category": "Development",
+    "SubCategory": "GitHub",
+    "Endpoints": [
+      "GET /repos/{owner}/{repo}",
+      "GET /user/repos",
+      "GET /orgs/{org}/repos",
+      "POST /user/repos",
+      "PATCH /repos/{owner}/{repo}",
+      "DELETE /repos/{owner}/{repo}"
+    ]
+  }
+]
+```
+
+**Available GitHub API Categories**:
+- Repositories - Create, read, update, delete repositories
+- Issues - Manage issues, comments, labels, milestones
+- Pull Requests - Create and manage pull requests
+- Commits - Access commit history and details
+- Branches - Manage repository branches
+- Users - Get user information and authentication
+- Organizations - Manage organization accounts and teams
+- Gists - Create and manage code snippets
+- Actions - Manage GitHub Actions workflows and runs
+- Releases - Manage repository releases and assets
+- Search - Search repositories, code, issues, and users
+- Webhooks - Manage repository webhooks and events
+- Contents - Access and modify repository contents
+- Notifications - Manage user notifications
+- Projects - Manage GitHub Projects (project boards)
+
+**Example**:
+```bash
+# Get all GitHub API endpoints
+curl http://localhost:8000/api/github
+
+# Search for specific GitHub APIs
+curl "http://localhost:8000/api/github?search=issues"
+curl "http://localhost:8000/api/github?search=webhook"
+```
+
+#### GET `/api/enriched`
+Get curated collection of high-quality open-source and free development APIs.
+
+**Query Parameters**:
+- `search` (string, optional): Search in API name or description
+- `auth` (string, optional): Filter by auth type (apiKey, OAuth, etc.)
+- `limit` (integer, default: 100): Maximum results to return
+
+**Response**:
+```json
+[
+  {
+    "API": "GitLab API",
+    "Description": "Complete REST API for GitLab repositories, CI/CD, and DevOps",
+    "Auth": "apiKey",
+    "HTTPS": true,
+    "Cors": "yes",
+    "Link": "https://gitlab.com/api/v4",
+    "Category": "Development"
+  }
+]
+```
+
+**Enriched API Categories**:
+- **Version Control & Code Hosting**: GitLab, Bitbucket
+- **Package Registries**: npm, PyPI, crates.io, Maven Central
+- **Code Quality & Analysis**: SonarQube, Codacy
+- **CI/CD & Deployment**: CircleCI, Travis CI, Vercel, Netlify
+- **Documentation & Knowledge**: Stack Exchange, DevDocs
+- **Container & Cloud**: Docker Hub, Heroku
+- **API Development & Testing**: Postman, Swagger/OpenAPI, JSONPlaceholder, ReqRes
+- **Code Collaboration**: Slack, Discord
+- **Project Management**: Jira, Trello, Linear
+- **Analytics & Monitoring**: Google Analytics, Sentry
+- **Security & Vulnerability**: CVE Details, Snyk
+- **AI & Machine Learning**: OpenAI, Hugging Face
+- **Data & Database**: JSONbin.io, Supabase
+- **Utilities & Tools**: REST Countries, IP API, QR Code Generator, UUID Generator
+
+**Example**:
+```bash
+# Get all enriched APIs
+curl http://localhost:8000/api/enriched
+
+# Search for specific APIs
+curl "http://localhost:8000/api/enriched?search=docker"
+curl "http://localhost:8000/api/enriched?search=npm"
+
+# Filter by authentication type
+curl "http://localhost:8000/api/enriched?auth=apiKey&limit=10"
+
+# Get APIs without authentication
+curl "http://localhost:8000/api/enriched?auth="
+```
+
+#### GET `/api/curated`
+Get all curated APIs (GitHub REST API + enriched development APIs combined).
+
+**Query Parameters**:
+- `include_github` (boolean, default: true): Include GitHub endpoints
+- `include_enriched` (boolean, default: true): Include enriched APIs
+- `search` (string, optional): Search term
+- `limit` (integer, default: 200): Maximum results to return
+
+**Response**:
+```json
+[
+  {
+    "API": "GitHub - Repositories",
+    "Description": "List, create, update, and delete repositories",
+    "Auth": "apiKey",
+    "HTTPS": true,
+    "Cors": "yes",
+    "Link": "https://api.github.com/repos",
+    "Category": "Development",
+    "SubCategory": "GitHub",
+    "Endpoints": [...]
+  },
+  {
+    "API": "GitLab API",
+    "Description": "Complete REST API for GitLab repositories, CI/CD, and DevOps",
+    "Auth": "apiKey",
+    "HTTPS": true,
+    "Cors": "yes",
+    "Link": "https://gitlab.com/api/v4",
+    "Category": "Development"
+  }
+]
+```
+
+**Example**:
+```bash
+# Get all curated APIs (GitHub + enriched)
+curl http://localhost:8000/api/curated
+
+# Get only GitHub APIs
+curl "http://localhost:8000/api/curated?include_enriched=false"
+
+# Get only enriched APIs
+curl "http://localhost:8000/api/curated?include_github=false"
+
+# Search across all curated APIs
+curl "http://localhost:8000/api/curated?search=api&limit=50"
+```
+
+
 ### Code Generation
 
 #### POST `/api/generate`

@@ -28,6 +28,7 @@ from services.deafauth import DeafAuthService
 from services.fibonrose import FibonroseService
 from services.pinksync import PinkSyncService
 from services.code_generator import CodeGeneratorService
+from services.curated_apis import CuratedAPIsService
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -56,6 +57,7 @@ deafauth_service = DeafAuthService()
 fibonrose_service = FibonroseService()
 pinksync_service = PinkSyncService()
 code_generator_service = CodeGeneratorService()
+curated_apis_service = CuratedAPIsService()
 
 # Dependency for authentication
 async def verify_auth(x_mbtq_token: Optional[str] = Header(None)) -> dict:
@@ -96,7 +98,8 @@ async def health_check():
         "services": {
             "deafauth": await deafauth_service.health_check(),
             "fibonrose": await fibonrose_service.health_check(),
-            "pinksync": await pinksync_service.health_check()
+            "pinksync": await pinksync_service.health_check(),
+            "curated_apis": await curated_apis_service.health_check()
         }
     }
 
@@ -233,6 +236,124 @@ async def get_categories():
             
     except Exception as e:
         logger.error(f"Error fetching categories: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/github", response_model=List[Dict[str, Any]])
+async def get_github_api_endpoints(
+    search: Optional[str] = None
+):
+    """
+    Get comprehensive GitHub REST API endpoints
+    
+    Returns all GitHub API endpoints with detailed information including
+    available endpoints for each category (repositories, issues, pulls, etc.)
+    """
+    try:
+        # Get GitHub API endpoints from curated service
+        endpoints = await curated_apis_service.get_github_endpoints(search=search)
+        
+        # Log the request
+        await fibonrose_service.log_event(
+            action="github_api_endpoints_fetched",
+            metadata={
+                "count": len(endpoints),
+                "search": search
+            },
+            user="system"
+        )
+        
+        return endpoints
+        
+    except Exception as e:
+        logger.error(f"Error fetching GitHub API endpoints: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/enriched", response_model=List[Dict[str, Any]])
+async def get_enriched_apis(
+    search: Optional[str] = None,
+    auth: Optional[str] = None,
+    limit: int = 100
+):
+    """
+    Get enriched collection of high-quality development APIs
+    
+    Returns curated collection of open-source and free development APIs including:
+    - Version control (GitLab, Bitbucket)
+    - Package registries (npm, PyPI, Maven)
+    - CI/CD platforms (CircleCI, Travis CI)
+    - Code quality tools (SonarQube, Codacy)
+    - Documentation (Stack Exchange, DevDocs)
+    - And many more...
+    """
+    try:
+        # Get enriched APIs from curated service
+        apis = await curated_apis_service.get_enriched_apis(
+            search=search,
+            auth=auth,
+            limit=limit
+        )
+        
+        # Log the request
+        await fibonrose_service.log_event(
+            action="enriched_apis_fetched",
+            metadata={
+                "count": len(apis),
+                "filters": {
+                    "search": search,
+                    "auth": auth
+                }
+            },
+            user="system"
+        )
+        
+        return apis
+        
+    except Exception as e:
+        logger.error(f"Error fetching enriched APIs: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/curated", response_model=List[Dict[str, Any]])
+async def get_all_curated_apis(
+    include_github: bool = True,
+    include_enriched: bool = True,
+    search: Optional[str] = None,
+    limit: int = 200
+):
+    """
+    Get all curated APIs (GitHub + enriched development APIs)
+    
+    Combines comprehensive GitHub REST API endpoints with a rich collection
+    of open-source and free development APIs to provide a one-stop catalog
+    for developers.
+    """
+    try:
+        # Get all curated APIs
+        apis = await curated_apis_service.get_all_curated_apis(
+            include_github=include_github,
+            include_enriched=include_enriched,
+            search=search,
+            limit=limit
+        )
+        
+        # Log the request
+        await fibonrose_service.log_event(
+            action="curated_apis_fetched",
+            metadata={
+                "count": len(apis),
+                "include_github": include_github,
+                "include_enriched": include_enriched,
+                "search": search
+            },
+            user="system"
+        )
+        
+        return apis
+        
+    except Exception as e:
+        logger.error(f"Error fetching curated APIs: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
