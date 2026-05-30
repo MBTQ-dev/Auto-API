@@ -1,5 +1,5 @@
 """
-PinkSync Service - Deployment service for MBTQ Universe
+Pinkflow Service - Deployment service for MBTQ.dev
 """
 
 from datetime import datetime
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class PinkSyncService:
     """
-    PinkSync deployment service
+    Pinkflow deployment service
     Handles API deployment to mbtq.dev
     """
     
@@ -45,7 +45,7 @@ class PinkSyncService:
             logs = []
             
             # Simulate deployment process
-            logs.append(self._create_log("🚀 PinkSync: Initiating deployment...", "info"))
+            logs.append(self._create_log("🚀 Pinkflow: Initiating deployment...", "info"))
             await asyncio.sleep(0.5)
             
             logs.append(self._create_log("📦 Creating API endpoint files...", "info"))
@@ -107,7 +107,7 @@ class PinkSyncService:
             }
             
         except Exception as e:
-            logger.error(f"PinkSync deployment error: {str(e)}")
+            logger.error(f"Pinkflow deployment error: {str(e)}")
             logs.append(self._create_log(f"❌ Deployment failed: {str(e)}", "error"))
             raise
     
