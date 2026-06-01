@@ -13,7 +13,7 @@ from models import DeploymentLog
 logger = logging.getLogger(__name__)
 
 
-class PinkSyncService:
+class PinkflowService:
     """
     Pinkflow deployment service
     Handles API deployment to vr4deaf.org
