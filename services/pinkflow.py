@@ -16,14 +16,14 @@ logger = logging.getLogger(__name__)
 class PinkSyncService:
     """
     Pinkflow deployment service
-    Handles API deployment to mbtq.dev
+    Handles API deployment to vr4deaf.org
     """
     
     def __init__(self):
         self.deployments: Dict[str, Dict] = {}  # In-memory deployment storage
     
     async def health_check(self) -> str:
-        """Check if PinkSync service is healthy"""
+        """Check if pinkflow service is healthy"""
         return "healthy"
     
     async def deploy(
@@ -34,7 +34,7 @@ class PinkSyncService:
         user: str = "unknown"
     ) -> Dict:
         """
-        Deploy API to mbtq.dev
+        Deploy API to vr4deaf.org
         This simulates a real deployment process
         In production, this would integrate with Vercel/GitHub Actions
         """
@@ -97,7 +97,7 @@ class PinkSyncService:
             
             self.deployments[deployment_id] = deployment_info
             
-            logger.info(f"⚡ PinkSync: Deployed {api_name} for user {user}")
+            logger.info(f"⚡ pinkflow: Deployed {api_name} for user {user}")
             
             return {
                 "deployment_id": deployment_id,
@@ -164,6 +164,6 @@ class PinkSyncService:
         """
         if deployment_id in self.deployments:
             del self.deployments[deployment_id]
-            logger.info(f"⚡ PinkSync: Deleted deployment {deployment_id}")
+            logger.info(f"⚡ pinkflow: Deleted deployment {deployment_id}")
             return True
         return False
