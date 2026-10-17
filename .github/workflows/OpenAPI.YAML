@@ -1,0 +1,169 @@
+openapi: 3.0.3
+info:
+  title: MBTQ Ecosystem Unified API
+  version: 1.0.0
+  description: Central API specification spanning DeafAuth, PinkSync, PinkFlow, and Auto-API.
+servers:
+  - url: https://api.mbtq.dev/v1
+    description: Production Gateway
+
+paths:
+  # ---------------------------------------------------------------------------
+  # 1. DeafAuth Endpoints
+  # ---------------------------------------------------------------------------
+  /auth/signup:
+    post:
+      summary: Register new user account
+      tags: [DeafAuth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+      responses:
+        '201': { description: User created successfully }
+
+  /auth/login:
+    post:
+      summary: Authenticate user & return JWT
+      tags: [DeafAuth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token: { type: string }
+                  token_type: { type: string, example: Bearer }
+
+  /auth/user:
+    get:
+      summary: Get current authenticated profile
+      tags: [DeafAuth]
+      security:
+        - BearerAuth: []
+      responses:
+        '200': { description: User profile retrieved }
+
+  # ---------------------------------------------------------------------------
+  # 2. PinkSync Endpoints
+  # ---------------------------------------------------------------------------
+  /sync/health:
+    get:
+      summary: API Gateway Health Check
+      tags: [PinkSync]
+      responses:
+        '200': { description: Gateway healthy }
+
+  /sync/broadcast:
+    post:
+      summary: Publish real-time event
+      tags: [PinkSync]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event_type: { type: string }
+                payload: { type: object }
+      responses:
+        '202': { description: Event accepted for broadcast }
+
+  # ---------------------------------------------------------------------------
+  # 3. PinkFlow Endpoints
+  # ---------------------------------------------------------------------------
+  /flow/deployments:
+    get:
+      summary: List deployment history
+      tags: [PinkFlow]
+      security:
+        - BearerAuth: []
+      responses:
+        '200': { description: Deployments retrieved }
+
+  /flow/deployments/trigger:
+    post:
+      summary: Trigger build/deployment pipeline
+      tags: [PinkFlow]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                service_name: { type: string }
+                branch: { type: string, default: main }
+      responses:
+        '202': { description: Pipeline execution started }
+
+  # ---------------------------------------------------------------------------
+  # 4. Auto-API Endpoints
+  # ---------------------------------------------------------------------------
+  /vr/clients:
+    get:
+      summary: Get VR clients list
+      tags: [Auto-API]
+      security:
+        - BearerAuth: []
+      responses:
+        '200': { description: Clients retrieved }
+    post:
+      summary: Ingest client profile from intake (Form/AppSheet)
+      tags: [Auto-API]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_name: { type: string }
+                vr_counselor_id: { type: string }
+                business_goals: { type: string }
+      responses:
+        '201': { description: Client profile created }
+
+  /vr/milestones/{client_id}:
+    get:
+      summary: Fetch milestone tracking for client
+      tags: [Auto-API]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Milestones retrieved }
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
